@@ -113,7 +113,7 @@ export function Learning() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Learning</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Learning</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Curricula, daily practice, and streaks
         </p>
@@ -128,7 +128,7 @@ export function Learning() {
       {loading ? (
         <div className="text-center text-sm text-gray-400">Loading...</div>
       ) : tracks.length === 0 ? (
-        <div className="rounded-xl border bg-white p-10 text-center shadow-sm dark:bg-gray-900 dark:border-gray-800">
+        <div className="rounded-xl border border-gray-100 bg-white p-10 text-center shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
           <GraduationCap size={32} className="mx-auto text-indigo-600 dark:text-indigo-400" />
           <h3 className="mt-3 text-sm font-semibold text-gray-900 dark:text-gray-100">
             No learning tracks yet
@@ -153,7 +153,7 @@ export function Learning() {
               <button
                 key={t.id}
                 onClick={() => setSelectedId(t.id)}
-                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${
+                className={`rounded-lg border px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   t.id === selectedId
                     ? 'border-indigo-600 bg-indigo-50 text-indigo-700 dark:border-indigo-500 dark:bg-indigo-500/10 dark:text-indigo-400'
                     : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800'
@@ -169,7 +169,7 @@ export function Learning() {
 
           {detail && (
             <>
-              <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+              <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
                 <p className="text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                   {detail.description}
                 </p>
@@ -180,7 +180,7 @@ export function Learning() {
 
               {/* Today's practice */}
               {detail.routines.length > 0 && (
-                <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+                <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                     Today's practice
                   </h3>
@@ -242,7 +242,7 @@ export function Learning() {
                 return (
                   <div
                     key={section.name}
-                    className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800"
+                    className="rounded-xl border border-gray-100 bg-white p-5 shadow-card dark:border-gray-800/60 dark:bg-gray-900/50"
                   >
                     <div className="flex items-center justify-between gap-4">
                       <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">

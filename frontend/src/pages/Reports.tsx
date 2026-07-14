@@ -14,7 +14,7 @@ export function Reports() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Reports</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Reports</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">Weekly audits and checkpoints</p>
       </div>
 
@@ -29,7 +29,7 @@ export function Reports() {
           {reports.map((report) => (
             <div
               key={report.id}
-              className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800"
+              className="rounded-xl border border-gray-100 bg-white p-5 shadow-card transition-shadow hover:shadow-card-hover dark:border-gray-800/60 dark:bg-gray-900/50"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

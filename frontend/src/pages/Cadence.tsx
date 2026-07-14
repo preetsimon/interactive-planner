@@ -26,7 +26,7 @@ export function Cadence() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Cadence</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Cadence</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Quarterly cycle — REST → REVIEW → SPRINT → CLOSED
         </p>
@@ -35,7 +35,7 @@ export function Cadence() {
       {loading ? (
         <div className="text-center text-sm text-gray-400">Loading...</div>
       ) : !quarter ? (
-        <div className="rounded-xl border bg-white p-6 text-center shadow-sm dark:bg-gray-900 dark:border-gray-800">
+        <div className="rounded-xl border border-gray-100 bg-white p-6 text-center shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">No active quarter.</p>
           <button
             onClick={async () => {
@@ -57,8 +57,8 @@ export function Cadence() {
       ) : (
         <>
           {/* Phase timeline */}
-          <div className="rounded-xl border bg-white p-6 shadow-sm dark:bg-gray-900 dark:border-gray-800">
-            <h3 className="mb-4 text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
+            <h3 className="mb-4 text-[13px] font-medium text-gray-700 dark:text-gray-300">
               Q{quarter.quarter_num} {quarter.year} — {quarter.theme || 'No theme'}
             </h3>
             <div className="flex items-center gap-2">
@@ -88,8 +88,8 @@ export function Cadence() {
 
           {/* Sprint dates */}
           {(quarter.sprint_start || quarter.sprint_end) && (
-            <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
-              <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
+              <h3 className="mb-3 text-[13px] font-medium text-gray-700 dark:text-gray-300">
                 Sprint Timeline
               </h3>
               <div className="flex items-center gap-4 text-sm">

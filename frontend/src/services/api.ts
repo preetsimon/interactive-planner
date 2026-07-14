@@ -150,6 +150,8 @@ export const learningApi = {
     api.post(`/learning/routines/${routineId}/log`, data ?? {}),
   unlogPractice: (routineId: string) =>
     api.delete(`/learning/routines/${routineId}/log`),
+  activity: (days = 140) =>
+    api.get<Record<string, number>>(`/learning/activity?days=${days}`),
 };
 
 export const auditLogApi = {

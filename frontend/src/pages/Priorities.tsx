@@ -53,7 +53,7 @@ export function Priorities() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Priorities</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Priorities</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Max 1 active per track — subtract to add
           </p>
@@ -68,7 +68,7 @@ export function Priorities() {
       </div>
 
       {showForm && (
-        <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
           {error && (
             <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-400">
               {error}
@@ -115,7 +115,7 @@ export function Priorities() {
           {priorities.map((p) => (
             <div
               key={p.id}
-              className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800"
+              className="rounded-xl border border-gray-100 bg-white p-5 shadow-card transition-shadow hover:shadow-card-hover dark:border-gray-800/60 dark:bg-gray-900/50"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">

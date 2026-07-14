@@ -20,7 +20,7 @@ export function Domains() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Target Domains</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Target Domains</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Niche filter — scored by asset overlap
           </p>
@@ -47,7 +47,7 @@ export function Domains() {
           {domains.map((domain) => (
             <div
               key={domain.id}
-              className={`rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800 ${
+              className={`rounded-xl border border-gray-100 bg-white p-5 shadow-card transition-shadow hover:shadow-card-hover dark:border-gray-800/60 dark:bg-gray-900/50 ${
                 domain.status === 'CUT' ? 'opacity-60' : ''
               }`}
             >

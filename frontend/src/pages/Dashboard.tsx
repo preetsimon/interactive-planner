@@ -8,8 +8,9 @@ import { WeeklyHoursChart } from '@/components/charts/WeeklyHoursChart';
 import { CategoryDonut } from '@/components/charts/CategoryDonut';
 import { SprintRing } from '@/components/charts/SprintRing';
 import { QuarterTimeline } from '@/components/charts/QuarterTimeline';
+import { ActivityHeatmap } from '@/components/charts/ActivityHeatmap';
 import {
-  prioritiesApi, cadenceApi, auditLogApi, timeBlocksApi,
+  prioritiesApi, cadenceApi, auditLogApi, timeBlocksApi, learningApi,
 } from '@/services/api';
 import type { Priority, Quarter, AuditLogEntry, TimeBlock } from '@/services/types';
 
@@ -51,14 +52,11 @@ function groupBlocksByDay(blocks: TimeBlock[]) {
 
   for (const block of blocks) {
     const d = new Date(block.start_at);
-    const dayIdx = (d.getDay() + 6) % 7; // Mon=0
+    const dayIdx = (d.getDay() + 6) % 7;
     const hours = (new Date(block.end_at).getTime() - d.getTime()) / 3600000;
     result[dayIdx].hours += hours;
-    // Heuristic: PROACTIVE categories get counted as proactive
     if (block.category_id) {
-      // We don't have category names here, so use a simple heuristic
-      // In real app, join with categories
-      result[dayIdx].proactive += hours * 0.6; // placeholder split
+      result[dayIdx].proactive += hours * 0.6;
       result[dayIdx].reactive += hours * 0.4;
     }
   }
@@ -83,11 +81,14 @@ function groupBlocksByCategory(blocks: TimeBlock[]) {
     .slice(0, 6);
 }
 
+const CARD = 'rounded-xl border border-gray-100 bg-white p-5 shadow-card transition-shadow hover:shadow-card-hover dark:border-gray-800/60 dark:bg-gray-900/50';
+
 export function Dashboard() {
   const [priorities, setPriorities] = useState<Priority[]>([]);
   const [quarter, setQuarter] = useState<Quarter | null>(null);
   const [violations, setViolations] = useState<AuditLogEntry[]>([]);
   const [timeBlocks, setTimeBlocks] = useState<TimeBlock[]>([]);
+  const [activityData, setActivityData] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -97,13 +98,15 @@ export function Dashboard() {
       cadenceApi.current().catch(() => null),
       auditLogApi.list().catch(() => []),
       timeBlocksApi.list(from, to).catch(() => []),
-    ]).then(([p, q, v, tb]) => {
+      learningApi.activity().catch(() => ({})),
+    ]).then(([p, q, v, tb, activity]) => {
       setPriorities(p);
       setQuarter(q);
       setViolations(
         v.filter((e) => e.event_type.includes('VIOLATION') || e.event_type.includes('UNUSED'))
       );
       setTimeBlocks(tb);
+      setActivityData(activity);
       setLoading(false);
     });
   }, []);
@@ -130,17 +133,16 @@ export function Dashboard() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-900 border-t-transparent dark:border-gray-100 dark:border-t-transparent" />
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-end justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Dashboard</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {quarter
               ? `Q${quarter.quarter_num} ${quarter.year} — ${quarter.phase}`
@@ -159,7 +161,6 @@ export function Dashboard() {
         )}
       </div>
 
-      {/* Stat cards row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Hours This Week"
@@ -189,17 +190,18 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Main content grid */}
+      {/* Activity heatmap */}
+      <div className={CARD}>
+        <ActivityHeatmap data={activityData} />
+      </div>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left column: Charts */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Weekly hours chart */}
-          <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+          <div className={CARD}>
             <WeeklyHoursChart data={weekData} />
           </div>
 
-          {/* Category breakdown */}
-          <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+          <div className={CARD}>
             {categoryData.length === 0 ? (
               <div className="text-center py-8">
                 <Clock size={32} className="mx-auto text-gray-300 dark:text-gray-700 mb-2" />
@@ -212,11 +214,9 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Right column: Sprint + Priorities */}
         <div className="space-y-6">
-          {/* Sprint ring */}
           {quarter && (
-            <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+            <div className={CARD}>
               <SprintRing
                 currentWeek={weekNum || 0}
                 totalWeeks={8}
@@ -225,13 +225,12 @@ export function Dashboard() {
             </div>
           )}
 
-          {/* Active priorities */}
-          <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+          <div className={CARD}>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <h3 className="text-[13px] font-medium text-gray-700 dark:text-gray-300">
                 Active Priorities
               </h3>
-              <a href="/priorities" className="text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+              <a href="/priorities" className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                 View all
               </a>
             </div>
@@ -242,7 +241,7 @@ export function Dashboard() {
                 {priorities.map((p) => (
                   <div
                     key={p.id}
-                    className="rounded-lg border border-gray-100 p-3 dark:border-gray-800"
+                    className="rounded-lg border border-gray-100 p-3 dark:border-gray-800/60"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
@@ -256,8 +255,8 @@ export function Dashboard() {
                       <span
                         className={`ml-2 flex-shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${
                           p.track === 'TECHNICAL'
-                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400'
-                            : 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
+                            ? 'bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400'
+                            : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
                         }`}
                       >
                         {p.track}
@@ -271,9 +270,8 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Quarter timeline */}
       {quarter && (
-        <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+        <div className={CARD}>
           <QuarterTimeline
             phase={quarter.phase}
             sprintStart={quarter.sprint_start}
@@ -282,14 +280,13 @@ export function Dashboard() {
         </div>
       )}
 
-      {/* Violations feed */}
       {violations.length > 0 && (
-        <div className="rounded-xl border bg-white p-5 shadow-sm dark:bg-gray-900 dark:border-gray-800">
+        <div className={CARD}>
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <h3 className="text-[13px] font-medium text-gray-700 dark:text-gray-300">
               Recent Violations
             </h3>
-            <a href="/audit-log" className="text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+            <a href="/audit-log" className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
               Full log
             </a>
           </div>

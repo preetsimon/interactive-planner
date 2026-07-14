@@ -24,13 +24,13 @@ export function AuditLog() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Audit Log</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Audit Log</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           Append-only event stream — nothing gets silently ignored
         </p>
       </div>
 
-      <div className="rounded-xl border bg-white shadow-sm dark:bg-gray-900 dark:border-gray-800">
+      <div className="rounded-xl border border-gray-100 bg-white shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
         {loading ? (
           <div className="p-8 text-center text-sm text-gray-400">Loading...</div>
         ) : entries.length === 0 ? (

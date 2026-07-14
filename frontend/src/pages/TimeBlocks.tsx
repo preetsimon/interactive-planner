@@ -30,14 +30,14 @@ export function TimeBlocks() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Time Blocks</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Time Blocks</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {blocks.length} blocks logged
           </p>
         </div>
       </div>
 
-      <div className="rounded-xl border bg-white shadow-sm dark:bg-gray-900 dark:border-gray-800">
+      <div className="rounded-xl border border-gray-100 bg-white shadow-card dark:border-gray-800/60 dark:bg-gray-900/50">
         {loading ? (
           <div className="p-8 text-center text-sm text-gray-400">Loading...</div>
         ) : blocks.length === 0 ? (

@@ -1,5 +1,5 @@
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select, func, case
@@ -216,6 +216,21 @@ async def unlog_practice(
     if log:
         await db.delete(log)
         await db.commit()
+
+
+@router.get("/activity")
+async def activity_heatmap(
+    days: int = Query(140, ge=7, le=365),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    since = date.today() - timedelta(days=days)
+    result = await db.execute(
+        select(PracticeLog.log_date, func.count())
+        .where(PracticeLog.user_id == user.id, PracticeLog.log_date >= since)
+        .group_by(PracticeLog.log_date)
+    )
+    return {row[0].isoformat(): row[1] for row in result.all()}
 
 
 async def _get_owned_track(
