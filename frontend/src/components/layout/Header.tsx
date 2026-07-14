@@ -12,35 +12,32 @@ export function Header({ sidebarWidth }: HeaderProps) {
 
   return (
     <header
-      className={`fixed right-0 top-0 z-30 flex h-16 items-center justify-between border-b bg-white/80 px-6 backdrop-blur-sm transition-all duration-300 dark:bg-gray-900/80 dark:border-gray-800`}
+      className="fixed right-0 top-0 z-30 flex h-14 items-center justify-between border-b border-gray-100 bg-white/80 px-6 backdrop-blur-sm transition-all duration-300 dark:bg-gray-950/80 dark:border-gray-800/60"
       style={{ left: sidebarWidth }}
     >
       <div>
-        <h1 className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+        <span className="text-[13px] font-medium text-gray-500 dark:text-gray-400">
           {user?.email || 'Welcome back'}
-        </h1>
+        </span>
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* Theme toggle */}
+      <div className="flex items-center gap-1">
         <button
           onClick={toggleTheme}
-          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+          className="rounded-lg p-2 text-gray-400 hover:bg-gray-50 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800/50 dark:hover:text-gray-300"
         >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
 
-        {/* Logout */}
         <button
           onClick={logout}
-          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+          className="rounded-lg p-2 text-gray-400 hover:bg-gray-50 hover:text-gray-600 dark:text-gray-500 dark:hover:bg-gray-800/50 dark:hover:text-gray-300"
           title="Sign out"
         >
-          <LogOut size={18} />
+          <LogOut size={16} />
         </button>
 
-        {/* Avatar */}
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
+        <div className="ml-1 flex h-7 w-7 items-center justify-center rounded-full bg-gray-900 text-[11px] font-semibold text-white dark:bg-gray-100 dark:text-gray-900">
           {user?.email?.[0]?.toUpperCase() || 'U'}
         </div>
       </div>

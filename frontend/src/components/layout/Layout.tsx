@@ -12,10 +12,10 @@ export function Layout() {
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
       <Header sidebarWidth={sidebarWidth} />
       <main
-        className="pt-16 transition-all duration-300"
+        className="pt-14 transition-all duration-300"
         style={{ marginLeft: sidebarWidth }}
       >
-        <div className="p-6">
+        <div className="mx-auto max-w-6xl px-8 py-8">
           <Outlet />
         </div>
       </main>
