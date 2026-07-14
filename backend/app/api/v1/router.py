@@ -7,6 +7,7 @@ from app.api.v1.cadence import router as cadence_router
 from app.api.v1.domains import router as domains_router
 from app.api.v1.audits import router as audits_router
 from app.api.v1.learning import router as learning_router
+from app.api.v1.integration import router as integration_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(auth_router)
@@ -16,3 +17,4 @@ api_router.include_router(cadence_router)
 api_router.include_router(domains_router)
 api_router.include_router(audits_router)
 api_router.include_router(learning_router)
+api_router.include_router(integration_router)
