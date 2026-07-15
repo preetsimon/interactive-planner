@@ -1,0 +1,21 @@
+[Unit]
+Description=POS (Personal Operating System) strategic planner
+After=network-online.target tailscaled.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ignition
+WorkingDirectory=/opt/pos
+EnvironmentFile=-/opt/pos/.env
+ExecStart=/opt/pos/.venv/bin/uvicorn app.main:app --app-dir /opt/pos/backend --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/opt/pos
+
+[Install]
+WantedBy=multi-user.target
