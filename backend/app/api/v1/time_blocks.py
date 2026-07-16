@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -36,8 +37,8 @@ async def create_time_block(
 
 @router.get("", response_model=list[TimeBlockRead])
 async def list_time_blocks(
-    from_date: datetime | None = Query(None, alias="from"),
-    to_date: datetime | None = Query(None, alias="to"),
+    from_date: Optional[datetime] = Query(None, alias="from"),
+    to_date: Optional[datetime] = Query(None, alias="to"),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):

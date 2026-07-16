@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 import enum
 from datetime import date, datetime, timezone
@@ -27,10 +28,10 @@ class Quarter(Base):
     quarter_num: Mapped[int] = mapped_column(Integer)
     theme: Mapped[str] = mapped_column(Text, default="")
     phase: Mapped[Phase] = mapped_column(Enum(Phase), default=Phase.REST)
-    rest_start: Mapped[date | None] = mapped_column(Date)
-    review_start: Mapped[date | None] = mapped_column(Date)
-    sprint_start: Mapped[date | None] = mapped_column(Date)
-    sprint_end: Mapped[date | None] = mapped_column(Date)
+    rest_start: Mapped[Optional[date]] = mapped_column(Date)
+    review_start: Mapped[Optional[date]] = mapped_column(Date)
+    sprint_start: Mapped[Optional[date]] = mapped_column(Date)
+    sprint_end: Mapped[Optional[date]] = mapped_column(Date)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()
     )

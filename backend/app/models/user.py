@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import datetime
 
@@ -13,8 +14,8 @@ class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(Text)
-    stated_goal: Mapped[str | None] = mapped_column(Text)
-    work_cutoff_time: Mapped[datetime | None] = mapped_column(Time)
+    stated_goal: Mapped[Optional[str]] = mapped_column(Text)
+    work_cutoff_time: Mapped[Optional[datetime]] = mapped_column(Time)
     weekly_goal_hours_threshold: Mapped[int] = mapped_column(Integer, default=10)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()

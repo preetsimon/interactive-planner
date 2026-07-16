@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import datetime
 
@@ -14,8 +15,8 @@ class ProtectedWindow(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     start_time: Mapped[datetime] = mapped_column(Time)
     end_time: Mapped[datetime] = mapped_column(Time)
-    days_of_week: Mapped[list[int] | None] = mapped_column(JSON)
-    allowed_category_ids: Mapped[list[str] | None] = mapped_column(JSON)
+    days_of_week: Mapped[Optional[list[int]]] = mapped_column(JSON)
+    allowed_category_ids: Mapped[Optional[list[str]]] = mapped_column(JSON)
     active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()

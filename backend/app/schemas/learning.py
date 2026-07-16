@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -10,10 +11,10 @@ class CurriculumItemRead(UUIDStrMixin, BaseModel):
     id: str
     section: str
     title: str
-    details: str | None = None
+    details: Optional[str] = None
     sort_order: int
     status: ItemStatus
-    completed_at: datetime | None = None
+    completed_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -21,11 +22,11 @@ class CurriculumItemRead(UUIDStrMixin, BaseModel):
 class RoutineStatusRead(UUIDStrMixin, BaseModel):
     id: str
     name: str
-    minutes: int | None = None
+    minutes: Optional[int] = None
     rest_weekdays: list[int]
     is_rest_today: bool
     today_done: bool
-    today_minutes: int | None = None
+    today_minutes: Optional[int] = None
     streak: int
 
     model_config = ConfigDict(from_attributes=True)
@@ -48,14 +49,14 @@ class TrackDetailRead(TrackRead):
 
 
 class PracticeLogCreate(BaseModel):
-    log_date: date | None = None
-    minutes: int | None = Field(None, ge=0, le=1440)
+    log_date: Optional[date] = None
+    minutes: Optional[int] = Field(None, ge=0, le=1440)
 
 
 class PracticeLogRead(UUIDStrMixin, BaseModel):
     id: str
     routine_id: str
     log_date: date
-    minutes: int | None = None
+    minutes: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)

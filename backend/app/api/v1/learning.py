@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import date, datetime, timedelta
 
@@ -103,7 +104,7 @@ async def get_track(
     routines = routines_result.scalars().all()
 
     today = date.today()
-    logs_by_routine: dict[uuid.UUID, dict[date, int | None]] = {}
+    logs_by_routine: dict[uuid.UUID, dict[date, Optional[int]]] = {}
     if routines:
         logs_result = await db.execute(
             select(PracticeLog.routine_id, PracticeLog.log_date, PracticeLog.minutes)
@@ -200,7 +201,7 @@ async def log_practice(
 @router.delete("/routines/{routine_id}/log", status_code=status.HTTP_204_NO_CONTENT)
 async def unlog_practice(
     routine_id: uuid.UUID,
-    log_date: date | None = Query(None),
+    log_date: Optional[date] = Query(None),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):

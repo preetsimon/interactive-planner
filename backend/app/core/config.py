@@ -14,5 +14,7 @@ class Settings(BaseSettings):
     rest_phase_days: int = 7
     review_phase_days: int = 7
 
+    service_key: SecretStr = SecretStr("")
+
 
 settings = Settings()

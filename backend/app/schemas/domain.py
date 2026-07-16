@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 from app.models.domain import DomainStatus
@@ -14,6 +15,6 @@ class DomainRead(UUIDStrMixin, BaseModel):
     name: str
     score: float
     status: DomainStatus
-    required_assets: list[str] | None
+    required_assets: Optional[list[str]]
 
     model_config = ConfigDict(from_attributes=True)

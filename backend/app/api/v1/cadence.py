@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import date
 from fastapi import APIRouter, Depends, HTTPException
@@ -14,7 +15,7 @@ from app.services.cadence import get_current_quarter, create_quarter, tick
 router = APIRouter(prefix="/cadence", tags=["cadence"])
 
 
-@router.get("/current", response_model=QuarterRead | None)
+@router.get("/current", response_model=Optional[QuarterRead])
 async def current_cadence(
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),

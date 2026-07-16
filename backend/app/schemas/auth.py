@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 from app.schemas._converters import UUIDStrMixin
 
@@ -5,7 +6,7 @@ from app.schemas._converters import UUIDStrMixin
 class UserRegister(BaseModel):
     email: EmailStr
     password: str
-    stated_goal: str | None = None
+    stated_goal: Optional[str] = None
 
 
 class UserLogin(BaseModel):
@@ -21,7 +22,7 @@ class Token(BaseModel):
 class UserRead(UUIDStrMixin, BaseModel):
     id: str
     email: str
-    stated_goal: str | None
+    stated_goal: Optional[str]
     weekly_goal_hours_threshold: int
 
     model_config = {"from_attributes": True}

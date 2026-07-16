@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import datetime
 
@@ -19,7 +20,7 @@ class TimeBlock(Base):
     category_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("categories.id"))
     start_at: Mapped[datetime] = mapped_column()
     end_at: Mapped[datetime] = mapped_column()
-    notes: Mapped[str | None] = mapped_column(Text)
+    notes: Mapped[Optional[str]] = mapped_column(Text)
     violates_protected_window: Mapped[bool] = mapped_column(Boolean, default=False)
     violates_cutoff: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(

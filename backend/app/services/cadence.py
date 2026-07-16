@@ -2,6 +2,7 @@
 
 CLOSED → REST → REVIEW → SPRINT → CLOSED
 """
+from typing import Optional
 import uuid
 from datetime import date, timedelta
 from sqlalchemy import select
@@ -10,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.quarter import Quarter, Phase
 
 
-async def get_current_quarter(db: AsyncSession, user_id: uuid.UUID) -> Quarter | None:
+async def get_current_quarter(db: AsyncSession, user_id: uuid.UUID) -> Optional[Quarter]:
     result = await db.execute(
         select(Quarter)
         .where(Quarter.user_id == user_id)
@@ -47,7 +48,7 @@ async def create_quarter(
     return quarter
 
 
-async def tick(db: AsyncSession, user_id: uuid.UUID, today: date | None = None) -> Quarter | None:
+async def tick(db: AsyncSession, user_id: uuid.UUID, today: Optional[date] = None) -> Optional[Quarter]:
     """Advance the phase if today crosses a boundary. Idempotent."""
     if today is None:
         today = date.today()

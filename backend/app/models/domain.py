@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 import enum
 from datetime import datetime
@@ -19,7 +20,7 @@ class TargetDomain(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     name: Mapped[str] = mapped_column(String(255))
-    required_assets: Mapped[list[str] | None] = mapped_column(JSON)
+    required_assets: Mapped[Optional[list[str]]] = mapped_column(JSON)
     score: Mapped[float] = mapped_column(Numeric(3, 2), default=0)
     status: Mapped[DomainStatus] = mapped_column(
         Enum(DomainStatus), default=DomainStatus.ACTIVE

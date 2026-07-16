@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
@@ -35,7 +36,7 @@ async def create_priority(
 
 @router.get("", response_model=list[PriorityRead])
 async def list_priorities(
-    status_filter: PriorityStatus | None = Query(None, alias="status"),
+    status_filter: Optional[PriorityStatus] = Query(None, alias="status"),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
