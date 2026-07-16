@@ -3,7 +3,7 @@ import uuid
 import enum
 from datetime import datetime, date
 
-from sqlalchemy import String, Enum, ForeignKey, Text, Integer, Date, JSON, UniqueConstraint
+from sqlalchemy import Boolean, String, Enum, ForeignKey, Text, Integer, Date, JSON, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -69,6 +69,33 @@ class PracticeLog(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     log_date: Mapped[date] = mapped_column(Date)
     minutes: Mapped[Optional[int]] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.utcnow()
+    )
+
+
+class BlockFeedback(Base):
+    __tablename__ = "block_feedback"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    log_date: Mapped[date] = mapped_column(Date)
+    block_title: Mapped[str] = mapped_column(String(255))
+    track_slug: Mapped[Optional[str]] = mapped_column(String(64))
+    curriculum_item_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        ForeignKey("curriculum_items.id")
+    )
+    routine_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        ForeignKey("practice_routines.id")
+    )
+    status: Mapped[str] = mapped_column(String(16))
+    planned_minutes: Mapped[Optional[int]] = mapped_column(Integer)
+    actual_minutes: Mapped[Optional[int]] = mapped_column(Integer)
+    confidence: Mapped[Optional[int]] = mapped_column(Integer)
+    difficulty: Mapped[Optional[int]] = mapped_column(Integer)
+    what_worked: Mapped[Optional[str]] = mapped_column(Text)
+    needs_practice: Mapped[Optional[str]] = mapped_column(Text)
+    repeat_requested: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()
     )
