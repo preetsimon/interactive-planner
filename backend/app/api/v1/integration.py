@@ -3,6 +3,7 @@
 Auth: X-Service-Key header (shared secret), not JWT — Ignition is a
 single-user local service, not a browser session.
 """
+from typing import Optional
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends
@@ -38,8 +39,8 @@ class SuggestedBlock(BaseModel):
     first_action: str
     minutes: int
     track: str
-    curriculum_item_id: str | None = None
-    routine_id: str | None = None
+    curriculum_item_id: Optional[str] = None
+    routine_id: Optional[str] = None
 
 
 class ActivePriority(BaseModel):
@@ -49,15 +50,15 @@ class ActivePriority(BaseModel):
 
 class WeeklyPlanResponse(BaseModel):
     week_start: str
-    phase: str | None
+    phase: Optional[str]
     priorities: list[ActivePriority]
     suggested_blocks: list[SuggestedBlock]
 
 
 @router.get("/weekly-plan", response_model=WeeklyPlanResponse)
 async def weekly_plan(
-    week_start: str | None = None,
-    user_email: str | None = None,
+    week_start: Optional[str] = None,
+    user_email: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
 ):
     ws = date.fromisoformat(week_start) if week_start else _next_monday()
@@ -99,7 +100,7 @@ async def _generate_suggested_blocks(
     db: AsyncSession,
     user_id,
     week_start: date,
-    phase: str | None,
+    phase: Optional[str],
 ) -> list[SuggestedBlock]:
     result = await db.execute(
         select(LearningTrack).where(LearningTrack.user_id == user_id)
@@ -170,14 +171,14 @@ async def _next_pending_items(db: AsyncSession, track_id, limit: int = 7):
     return result.scalars().all()
 
 
-def _block_title(slug: str, routine_name: str, item: CurriculumItem | None) -> str:
+def _block_title(slug: str, routine_name: str, item: Optional[CurriculumItem]) -> str:
     prefix = "Py" if "python" in slug else "Fr" if "french" in slug else slug[:8]
     if item:
         return f"{prefix}: {item.title}"
     return f"{prefix}: {routine_name}"
 
 
-def _block_first_action(routine_name: str, item: CurriculumItem | None) -> str:
+def _block_first_action(routine_name: str, item: Optional[CurriculumItem]) -> str:
     if item and item.details:
         first_sentence = item.details.split(". ")[0]
         return first_sentence[:120] if len(first_sentence) > 120 else first_sentence
@@ -189,10 +190,10 @@ def _block_first_action(routine_name: str, item: CurriculumItem | None) -> str:
 class BlockResult(BaseModel):
     title: str
     status: str
-    planned_minutes: int | None = None
-    actual_minutes: float | None = None
-    curriculum_item_id: str | None = None
-    routine_id: str | None = None
+    planned_minutes: Optional[int] = None
+    actual_minutes: Optional[float] = None
+    curriculum_item_id: Optional[str] = None
+    routine_id: Optional[str] = None
 
 
 class DayResultsRequest(BaseModel):
@@ -208,7 +209,7 @@ class DayResultsResponse(BaseModel):
 @router.post("/day-results", response_model=DayResultsResponse)
 async def day_results(
     payload: DayResultsRequest,
-    user_email: str | None = None,
+    user_email: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
 ):
     user = await _resolve_user(db, user_email)
@@ -268,7 +269,7 @@ async def day_results(
 
 # ---------- helpers ----------
 
-async def _resolve_user(db: AsyncSession, email: str | None):
+async def _resolve_user(db: AsyncSession, email: Optional[str]):
     from app.models.user import User
     if email:
         result = await db.execute(select(User).where(User.email == email))

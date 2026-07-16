@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 import enum
 from datetime import date, datetime, timezone
@@ -23,7 +24,7 @@ class Deadline(Base):
     status: Mapped[DeadlineStatus] = mapped_column(
         Enum(DeadlineStatus), default=DeadlineStatus.OPEN
     )
-    scope_cuts: Mapped[dict | None] = mapped_column(JSON)
+    scope_cuts: Mapped[Optional[dict]] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()
     )

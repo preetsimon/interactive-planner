@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 import enum
 from datetime import date, datetime, timezone
@@ -30,7 +31,7 @@ class AuditReport(Base):
     type: Mapped[AuditType] = mapped_column(Enum(AuditType))
     period_start: Mapped[date] = mapped_column(Date)
     period_end: Mapped[date] = mapped_column(Date)
-    payload: Mapped[dict | None] = mapped_column(JSON)
+    payload: Mapped[Optional[dict]] = mapped_column(JSON)
     verdict: Mapped[Verdict] = mapped_column(Enum(Verdict))
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()
@@ -48,8 +49,8 @@ class AuditLogEntry(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     event_type: Mapped[str] = mapped_column(String(50))
     entity_type: Mapped[str] = mapped_column(String(50))
-    entity_id: Mapped[uuid.UUID | None] = mapped_column()
-    detail: Mapped[dict | None] = mapped_column(JSON)
+    entity_id: Mapped[Optional[uuid.UUID]] = mapped_column()
+    detail: Mapped[Optional[dict]] = mapped_column(JSON)
     occurred_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()
     )

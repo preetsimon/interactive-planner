@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 import enum
 from datetime import datetime
@@ -35,7 +36,7 @@ class Priority(Base):
         Enum(PriorityStatus), default=PriorityStatus.ACTIVE
     )
     definition_of_done: Mapped[str] = mapped_column(Text)
-    quarter_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("quarters.id"))
+    quarter_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("quarters.id"))
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()
     )

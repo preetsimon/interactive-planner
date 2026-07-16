@@ -1,4 +1,5 @@
 """Block Guard — flags violations on time_blocks insert, never rejects."""
+from typing import Optional
 import uuid
 from datetime import datetime, time
 from sqlalchemy import select
@@ -11,7 +12,7 @@ from app.models.user import User
 
 async def check_protected_window(
     db: AsyncSession, block: TimeBlock
-) -> tuple[bool, uuid.UUID | None]:
+) -> tuple[bool, Optional[uuid.UUID]]:
     """Check if a block overlaps any active protected window. Returns (violation, window_id)."""
     weekday = block.start_at.isoweekday()
     result = await db.execute(

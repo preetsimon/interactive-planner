@@ -1,3 +1,4 @@
+from typing import Optional
 from datetime import date
 from pydantic import BaseModel, ConfigDict
 
@@ -17,7 +18,7 @@ class QuarterRead(UUIDStrMixin, BaseModel):
     quarter_num: int
     theme: str
     phase: Phase
-    sprint_start: date | None
-    sprint_end: date | None
+    sprint_start: Optional[date]
+    sprint_end: Optional[date]
 
     model_config = ConfigDict(from_attributes=True)

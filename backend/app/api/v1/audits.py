@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 from datetime import date
 from fastapi import APIRouter, Depends, Query
@@ -15,9 +16,9 @@ router = APIRouter(tags=["audits"])
 
 @router.get("/reports", response_model=list[AuditReportRead])
 async def list_reports(
-    report_type: str | None = Query(None, alias="type"),
-    from_date: date | None = Query(None, alias="from"),
-    to_date: date | None = Query(None, alias="to"),
+    report_type: Optional[str] = Query(None, alias="type"),
+    from_date: Optional[date] = Query(None, alias="from"),
+    to_date: Optional[date] = Query(None, alias="to"),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
@@ -34,8 +35,8 @@ async def list_reports(
 
 @router.get("/audit-log", response_model=list[AuditLogEntryRead])
 async def list_audit_log(
-    from_date: date | None = Query(None, alias="from"),
-    to_date: date | None = Query(None, alias="to"),
+    from_date: Optional[date] = Query(None, alias="from"),
+    to_date: Optional[date] = Query(None, alias="to"),
     db: AsyncSession = Depends(get_db),
     user: User = Depends(get_current_user),
 ):

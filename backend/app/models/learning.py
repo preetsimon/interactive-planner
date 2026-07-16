@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 import enum
 from datetime import datetime, date
@@ -38,12 +39,12 @@ class CurriculumItem(Base):
     track_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("learning_tracks.id"))
     section: Mapped[str] = mapped_column(String(255))
     title: Mapped[str] = mapped_column(String(255))
-    details: Mapped[str | None] = mapped_column(Text)
+    details: Mapped[Optional[str]] = mapped_column(Text)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
     status: Mapped[ItemStatus] = mapped_column(
         Enum(ItemStatus), default=ItemStatus.PENDING
     )
-    completed_at: Mapped[datetime | None] = mapped_column(default=None)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(default=None)
 
 
 class PracticeRoutine(Base):
@@ -52,10 +53,10 @@ class PracticeRoutine(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     track_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("learning_tracks.id"))
     name: Mapped[str] = mapped_column(String(255))
-    minutes: Mapped[int | None] = mapped_column(Integer)
+    minutes: Mapped[Optional[int]] = mapped_column(Integer)
     # Weekday numbers (Mon=0 .. Sun=6) on which this routine is not scheduled;
     # rest days neither extend nor break the streak.
-    rest_weekdays: Mapped[list[int] | None] = mapped_column(JSON)
+    rest_weekdays: Mapped[Optional[list[int]]] = mapped_column(JSON)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
 
 
@@ -67,7 +68,7 @@ class PracticeLog(Base):
     routine_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("practice_routines.id"))
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     log_date: Mapped[date] = mapped_column(Date)
-    minutes: Mapped[int | None] = mapped_column(Integer)
+    minutes: Mapped[Optional[int]] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.utcnow()
     )
