@@ -126,6 +126,9 @@ async def _generate_suggested_blocks(
             .order_by(PracticeRoutine.sort_order)
         )
         routines = routines_result.scalars().all()
+        if not routines:
+            continue
+        driver = routines[0]  # sort_order 0 — the routine that advances the item cursor
 
         next_items = await _next_pending_items(db, track.id, limit=7)
         review_items = await _items_needing_review(db, user_id, track.slug)
@@ -134,28 +137,35 @@ async def _generate_suggested_blocks(
 
         is_rest_phase = phase == "REST"
 
-        for routine in routines:
-            rest_days = set(routine.rest_weekdays or [])
+        # Day-outer / routine-inner: every routine active on a given day shares
+        # the SAME curriculum item for that day (they're all working the same
+        # theme), and the cursor advances once per day, not once per routine —
+        # otherwise later routines silently drift ahead of the driver's pacing.
+        for day_offset in range(7):
+            day = week_start + timedelta(days=day_offset)
+            weekday = day.weekday()
 
-            if is_rest_phase and routine.sort_order > 0:
-                continue
+            driver_rest_days = set(driver.rest_weekdays or [])
+            driver_runs_today = weekday not in driver_rest_days
 
-            adjusted_minutes = _adjusted_minutes(
-                routine.minutes or 60, adj
-            )
+            curriculum_item = None
+            if driver_runs_today and item_cursor < len(next_items):
+                curriculum_item = next_items[item_cursor]
 
-            for day_offset in range(7):
-                day = week_start + timedelta(days=day_offset)
-                weekday = day.weekday()
-
+            for routine in routines:
+                rest_days = set(routine.rest_weekdays or [])
                 if weekday in rest_days:
                     continue
+                if is_rest_phase and routine.sort_order > 0:
+                    continue
+
+                adjusted_minutes = _adjusted_minutes(routine.minutes or 60, adj)
 
                 if review_cursor < len(review_items) and routine.sort_order == 0 and day_offset % 3 == 0:
                     rev_item = review_items[review_cursor]
                     blocks.append(SuggestedBlock(
                         day_offset=day_offset,
-                        title=_block_title(track.slug, "Review", rev_item),
+                        title=f"{_track_prefix(track.slug)}: Review — {rev_item.title}",
                         first_action=f"Review: {rev_item.title} — revisit areas marked for more practice",
                         minutes=max(30, adjusted_minutes // 2),
                         track=track.slug,
@@ -164,11 +174,12 @@ async def _generate_suggested_blocks(
                     ))
                     review_cursor += 1
 
-                curriculum_item = None
-                if item_cursor < len(next_items):
-                    curriculum_item = next_items[item_cursor]
-
-                title = _block_title(track.slug, routine.name, curriculum_item)
+                # Only the driver routine's title carries the item name —
+                # every other routine on the same day would otherwise get an
+                # identical title, and Ignition dedupes imports by
+                # (date, title), silently dropping the collision.
+                title_item = curriculum_item if routine.sort_order == 0 else None
+                title = _block_title(track.slug, routine.name, title_item)
                 first_action = _block_first_action(routine.name, curriculum_item)
 
                 if adj["avg_difficulty"] and adj["avg_difficulty"] > 3.5 and curriculum_item:
@@ -184,8 +195,8 @@ async def _generate_suggested_blocks(
                     routine_id=str(routine.id),
                 ))
 
-                if curriculum_item and routine.sort_order == 0:
-                    item_cursor += 1
+            if curriculum_item and driver_runs_today:
+                item_cursor += 1
 
     return blocks
 
@@ -274,8 +285,12 @@ async def _next_pending_items(db: AsyncSession, track_id, limit: int = 7):
     return result.scalars().all()
 
 
+def _track_prefix(slug: str) -> str:
+    return "Py" if "python" in slug else "Fr" if "french" in slug else slug[:8]
+
+
 def _block_title(slug: str, routine_name: str, item: Optional[CurriculumItem]) -> str:
-    prefix = "Py" if "python" in slug else "Fr" if "french" in slug else slug[:8]
+    prefix = _track_prefix(slug)
     if item:
         return f"{prefix}: {item.title}"
     return f"{prefix}: {routine_name}"
