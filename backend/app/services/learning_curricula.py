@@ -19,13 +19,19 @@ PYTHON_TRACK = {
         "— assay-qc-service (FastAPI, Postgres, SQLAlchemy, Alembic, Docker, "
         "pytest, Pydantic). Every topic: JS comparison → Python syntax → "
         "idiomatic Python → job-market usage → small exercise → real project "
-        "application. No pointless calculator apps. 5 sessions/week (Mon, "
-        "Tue, Wed, Sat, Sun) — Thu/Fri are off."
+        "application. No pointless calculator apps. 4 hours/day across two "
+        "2-hour sessions — morning lesson + exercises, afternoon build & "
+        "apply — 5 days/week (Mon, Tue, Wed, Sat, Sun), Thu/Fri off."
     ),
     "routines": [
         {
             "name": "Bootcamp session — lesson, exercises, review, refactor, commit",
-            "minutes": 60,
+            "minutes": 120,
+            "rest_weekdays": REST_WEEKDAYS,
+        },
+        {
+            "name": "Bootcamp session — build & apply",
+            "minutes": 120,
             "rest_weekdays": REST_WEEKDAYS,
         },
     ],
@@ -241,8 +247,8 @@ FRENCH_TRACK = {
     "slug": "french-a1-clb7",
     "name": "French — A1 → CLB 7 (Montréal)",
     "description": (
-        "2 hours/day: 60 min cartoon listening + shadowing, 45 min textbook/"
-        "grammar, 15 min Anki. 5 days/week — Mon, Tue, Wed, Sat, Sun; Thu/Fri "
+        "3 hours/day: 90 min cartoon listening + shadowing, 60 min textbook/"
+        "grammar, 30 min Anki. 5 days/week — Mon, Tue, Wed, Sat, Sun; Thu/Fri "
         "off. Cartoon rotation: Mon Peppa Pig, Tue Petit Ours Brun, Wed "
         "Trotro, Sat repeat a favorite, Sun Caillou (québécois ear training). "
         "Listening block per episode: first pass with French subtitles, "
@@ -251,17 +257,17 @@ FRENCH_TRACK = {
     "routines": [
         {
             "name": "Cartoon listening + shadowing",
-            "minutes": 60,
+            "minutes": 90,
             "rest_weekdays": REST_WEEKDAYS,
         },
         {
             "name": "Textbook / grammar",
-            "minutes": 45,
+            "minutes": 60,
             "rest_weekdays": REST_WEEKDAYS,
         },
         {
             "name": "Anki",
-            "minutes": 15,
+            "minutes": 30,
             "rest_weekdays": REST_WEEKDAYS,
         },
     ],
