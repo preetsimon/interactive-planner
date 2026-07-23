@@ -274,9 +274,26 @@ export function Learning() {
                             >
                               {item.title}
                             </span>
+                            {item.learning_goal && (
+                              <span className="mt-1 block text-xs font-medium leading-relaxed text-indigo-600 dark:text-indigo-400">
+                                Goal: {item.learning_goal}
+                              </span>
+                            )}
                             {item.details && (
                               <span className="mt-0.5 block text-xs leading-relaxed text-gray-500 dark:text-gray-400">
                                 {item.details}
+                              </span>
+                            )}
+                            {item.key_topics && item.key_topics.length > 0 && (
+                              <span className="mt-1.5 flex flex-wrap gap-1.5">
+                                {item.key_topics.map((topic) => (
+                                  <span
+                                    key={topic}
+                                    className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                                  >
+                                    {topic}
+                                  </span>
+                                ))}
                               </span>
                             )}
                           </span>

@@ -57,6 +57,8 @@ export interface CurriculumItem {
   section: string;
   title: string;
   details: string | null;
+  learning_goal: string | null;
+  key_topics: string[] | null;
   sort_order: number;
   status: 'PENDING' | 'DONE';
   completed_at: string | null;

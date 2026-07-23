@@ -40,6 +40,11 @@ class CurriculumItem(Base):
     section: Mapped[str] = mapped_column(String(255))
     title: Mapped[str] = mapped_column(String(255))
     details: Mapped[Optional[str]] = mapped_column(Text)
+    # What you're trying to accomplish with this item — surfaced as the
+    # synced block's first action in Ignition.
+    learning_goal: Mapped[Optional[str]] = mapped_column(Text)
+    # Concrete topics/concepts covered — "by the end you'll know X, Y, Z".
+    key_topics: Mapped[Optional[list[str]]] = mapped_column(JSON)
     sort_order: Mapped[int] = mapped_column(Integer, default=0)
     status: Mapped[ItemStatus] = mapped_column(
         Enum(ItemStatus), default=ItemStatus.PENDING

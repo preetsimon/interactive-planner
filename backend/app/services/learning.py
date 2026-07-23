@@ -17,7 +17,13 @@ from app.services.learning_curricula import DEFAULT_TRACKS
 async def seed_default_tracks(
     db: AsyncSession, user_id: uuid.UUID
 ) -> list[LearningTrack]:
-    """Create the default tracks for a user; idempotent by slug."""
+    """Create or sync the default tracks for a user; idempotent by slug.
+
+    Re-running this (e.g. after DEFAULT_TRACKS content changes) updates
+    existing routines/items to match the latest spec instead of no-op'ing —
+    matched by routine name / item title within the track. Item status and
+    completed_at are never touched, so re-syncing never loses progress.
+    """
     tracks: list[LearningTrack] = []
     for spec in DEFAULT_TRACKS:
         result = await db.execute(
@@ -36,20 +42,55 @@ async def seed_default_tracks(
             )
             db.add(track)
             await db.flush()
-            order = 0
-            for section in spec["sections"]:
-                for item in section["items"]:
+        else:
+            track.name = spec["name"]
+            track.description = spec["description"]
+
+        existing_items = (
+            (await db.execute(
+                select(CurriculumItem).where(CurriculumItem.track_id == track.id)
+            )).scalars().all()
+        )
+        items_by_title = {i.title: i for i in existing_items}
+
+        order = 0
+        for section in spec["sections"]:
+            for item in section["items"]:
+                existing = items_by_title.get(item["title"])
+                if existing:
+                    existing.section = section["section"]
+                    existing.details = item["details"]
+                    existing.learning_goal = item.get("learning_goal")
+                    existing.key_topics = item.get("key_topics")
+                    existing.sort_order = order
+                else:
                     db.add(
                         CurriculumItem(
                             track_id=track.id,
                             section=section["section"],
                             title=item["title"],
                             details=item["details"],
+                            learning_goal=item.get("learning_goal"),
+                            key_topics=item.get("key_topics"),
                             sort_order=order,
                         )
                     )
-                    order += 1
-            for i, routine in enumerate(spec["routines"]):
+                order += 1
+
+        existing_routines = (
+            (await db.execute(
+                select(PracticeRoutine).where(PracticeRoutine.track_id == track.id)
+            )).scalars().all()
+        )
+        routines_by_name = {r.name: r for r in existing_routines}
+
+        for i, routine in enumerate(spec["routines"]):
+            existing = routines_by_name.get(routine["name"])
+            if existing:
+                existing.minutes = routine["minutes"]
+                existing.rest_weekdays = routine["rest_weekdays"]
+                existing.sort_order = i
+            else:
                 db.add(
                     PracticeRoutine(
                         track_id=track.id,
@@ -59,6 +100,7 @@ async def seed_default_tracks(
                         sort_order=i,
                     )
                 )
+
         tracks.append(track)
     await db.commit()
     return tracks

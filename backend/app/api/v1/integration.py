@@ -280,6 +280,8 @@ def _block_title(slug: str, routine_name: str, item: Optional[CurriculumItem]) -
 
 
 def _block_first_action(routine_name: str, item: Optional[CurriculumItem]) -> str:
+    if item and item.learning_goal:
+        return item.learning_goal[:160]
     if item and item.details:
         first_sentence = item.details.split(". ")[0]
         return first_sentence[:120] if len(first_sentence) > 120 else first_sentence

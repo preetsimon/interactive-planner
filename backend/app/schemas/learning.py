@@ -12,6 +12,8 @@ class CurriculumItemRead(UUIDStrMixin, BaseModel):
     section: str
     title: str
     details: Optional[str] = None
+    learning_goal: Optional[str] = None
+    key_topics: Optional[list[str]] = None
     sort_order: int
     status: ItemStatus
     completed_at: Optional[datetime] = None
