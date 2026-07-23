@@ -104,7 +104,9 @@ async def _generate_suggested_blocks(
     phase: Optional[str],
 ) -> list[SuggestedBlock]:
     result = await db.execute(
-        select(LearningTrack).where(LearningTrack.user_id == user_id)
+        select(LearningTrack)
+        .where(LearningTrack.user_id == user_id)
+        .order_by(LearningTrack.created_at)
     )
     tracks = result.scalars().all()
 
